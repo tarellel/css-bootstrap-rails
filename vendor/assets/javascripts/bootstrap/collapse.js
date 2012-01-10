@@ -17,98 +17,107 @@
  * limitations under the License.
  * ============================================================ */
 
-(function( $ ){
+!
+function($) {
 
   "use strict"
 
-  var Collapse = function ( element, options ) {
-  	this.$element = $(element)
-    this.settings = $.extend({}, $.fn.collapse.defaults, options)
+  var Collapse = function(element, options) {
+    this.$element = $(element)
+    this.options = $.extend({}, $.fn.collapse.defaults, options)
 
-    if (this.settings["parent"]) {
-      this.$parent = $(this.settings["parent"])
+    if (this.options["parent"]) {
+      this.$parent = $(this.options["parent"])
     }
 
-    this.settings.toggle && this.toggle()
+    this.options.toggle && this.toggle()
   }
 
   Collapse.prototype = {
 
     constructor: Collapse
 
-  , dimension: function () {
+    ,
+    dimension: function() {
       var hasWidth = this.$element.hasClass('width')
       return hasWidth ? 'width' : 'height'
     }
 
-  , show: function () {
-      var dimension = this.dimension()
-        , scroll = $.camelCase(['scroll', dimension].join('-'))
-        , actives = this.$parent && this.$parent.find('.in')
-        , hasData
-
-      if (actives && actives.length) {
-        hasData = actives.data('collapse')
-        actives.collapse('hide')
-        hasData || actives.data('collapse', null)
-      }
-
-      this.$element[dimension](0)
-      this.transition('addClass', 'show', 'shown')
-      this.$element[dimension](this.$element[0][scroll])
-
+    ,
+    show: function() {
+      var dimension = this.dimension(),
+          scroll = $.camelCase(['scroll', dimension].join('-')),
+          actives = this.$parent && this.$parent.find('.in'),
+          hasData
+          
+          
+          
+          if (actives && actives.length) {
+          hasData = actives.data('collapse')
+          actives.collapse('hide')
+          hasData || actives.data('collapse', null)
+          }
+          
+          
+          
+          this.$element[dimension](0)
+           this.transition('addClass', 'show', 'shown')
+           this.$element[dimension](this.$element[0][scroll])
+          
+          
     }
 
-  , hide: function () {
+    ,
+    hide: function() {
       var dimension = this.dimension()
       this.reset(this.$element[dimension]())
       this.transition('removeClass', 'hide', 'hidden')
       this.$element[dimension](0)
     }
 
-  , reset: function ( size ) {
+    ,
+    reset: function(size) {
       var dimension = this.dimension()
 
-      this.$element
-        .removeClass('collapse')
-        [dimension](size || '')
-        [0].offsetWidth
+      this.$element.removeClass('collapse')[dimension](size || '')[0].offsetWidth
 
       this.$element.addClass('collapse')
     }
 
-  , transition: function ( method, startEvent, completeEvent ) {
-      var that = this
-        , complete = function () {
-            if (startEvent == 'show') that.reset()
-            that.$element.trigger(completeEvent)
+    ,
+    transition: function(method, startEvent, completeEvent) {
+      var that = this,
+          complete = function() {
+          if (startEvent == 'show') that.reset()
+          that.$element.trigger(completeEvent)
           }
+          
+          
+          
+          this.$element.trigger(startEvent)[method]('in')
+          
+          
+           $.support.transition && this.$element.hasClass('collapse') ? this.$element.one($.support.transition.end, complete) : complete()
+    }
 
-      this.$element
-        .trigger(startEvent)
-        [method]('in')
-
-      $.support.transition && this.$element.hasClass('collapse') ?
-        this.$element.one($.support.transition.end, complete) :
-        complete()
-  	}
-
-  , toggle: function () {
+    ,
+    toggle: function() {
       this[this.$element.hasClass('in') ? 'hide' : 'show']()
-  	}
+    }
 
   }
 
-  /* COLLAPSIBLE PLUGIN DEFINITION
+/* COLLAPSIBLE PLUGIN DEFINITION
   * ============================== */
 
-  $.fn.collapse = function ( option ) {
-    return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('collapse')
-        , options = typeof option == 'object' && option
-      if (!data) $this.data('collapse', (data = new Collapse(this, options)))
-      if (typeof option == 'string') data[option]()
+  $.fn.collapse = function(option) {
+    return this.each(function() {
+      var $this = $(this),
+          data = $this.data('collapse'),
+          options = typeof option == 'object' && option
+          
+          if (!data) $this.data('collapse', (data = new Collapse(this, options)))
+           if (typeof option == 'string') data[option]()
     })
   }
 
@@ -116,20 +125,20 @@
     toggle: true
   }
 
-  $.fn.collapse.Collapse = Collapse
+  $.fn.collapse.Constructor = Collapse
 
 
- /* COLLAPSIBLE DATA-API
+/* COLLAPSIBLE DATA-API
   * ==================== */
 
-  $(function () {
-    $('body').delegate('[data-toggle=collapse]', 'click.collapse.data-api', function ( e ) {
-      var $this = $(this)
-        , target = $this.attr('data-target') || $this.attr('href')
-        , option = $(target).data('collapse') ? 'toggle' : $this.data()
-        e.preventDefault()
-      $(target).collapse(option)
+  $(function() {
+    $('body').on('click.collapse.data-api', '[data-toggle=collapse]', function(e) {
+      var $this = $(this),
+          target = $this.attr('data-target') || $this.attr('href'),
+          option = $(target).data('collapse') ? 'toggle' : $this.data()
+           e.preventDefault()
+           $(target).collapse(option)
     })
   })
 
-})( window.jQuery || window.ender )
+}(window.jQuery)

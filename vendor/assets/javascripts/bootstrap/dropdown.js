@@ -18,58 +18,84 @@
  * ============================================================ */
 
 
-!function( $ ){
+!
+function($) {
 
   "use strict"
 
- /* DROPDOWN CLASS DEFINITION
+/* DROPDOWN CLASS DEFINITION
   * ========================= */
 
-  var toggle = '[data-toggle="dropdown"]'
-    , Dropdown = function ( element ) {
-        $(element).bind('click', this.toggle)
+  var toggle = '[data-toggle="dropdown"]',
+      Dropdown = function(element) {
+      $(element).bind('click', this.toggle)
+      }
+      
+      
+      
+      Dropdown.prototype = {
+
+      constructor: Dropdown
+
+      ,
+      toggle: function(e) {
+        var $this = $(this),
+            selector = $this.attr('data-target') || $this.attr('href'),
+            $parent = $(selector),
+            isActive
+            
+            
+             $parent.length || ($parent = $this.parent())
+             isActive = $parent.hasClass('open')
+            
+            
+             clearMenus()
+            
+            !isActive && $parent.toggleClass('open')
+            
+            
+             return false
       }
 
-  Dropdown.prototype = {
-
-    constructor: Dropdown
-
-  , toggle: function ( e ) {
-      var li = $(this).parent('li')
-        , isActive = li.hasClass('open')
-
-      clearMenus()
-      !isActive && li.toggleClass('open')
-
-      return false
-    }
-
-  }
-
-  function clearMenus() {
-    $(toggle).parent('li').removeClass('open')
-  }
-
-
-  /* DROPDOWN PLUGIN DEFINITION
+      }
+      
+      
+      
+      function clearMenus() {
+      $(toggle).parent().removeClass('open')
+      }
+      
+      
+      
+      /* DROPDOWN PLUGIN DEFINITION
    * ========================== */
-
-  $.fn.dropdown = function ( option ) {
-    return this.each(function () {
-      var $this = $(this)
-        , data = $this.data('dropdown')
-      if (!data) $this.data('dropdown', (data = new Dropdown(this)))
-      if (typeof option == 'string') data[option].call($this)
-    })
-  }
-
-
-  /* APPLY TO STANDARD DROPDOWN ELEMENTS
+      
+      
+      
+      $.fn.dropdown = function(option) {
+      return this.each(function() {
+        var $this = $(this),
+            data = $this.data('dropdown')
+             if (!data) $this.data('dropdown', (data = new Dropdown(this)))
+             if (typeof option == 'string') data[option].call($this)
+      })
+      }
+      
+      
+      
+      $.fn.dropdown.Constructor = Dropdown
+      
+      
+      
+      /* APPLY TO STANDARD DROPDOWN ELEMENTS
    * =================================== */
-
-  $(function () {
-    $('html').bind('click.dropdown.data-api', clearMenus)
-    $('body').delegate(toggle, 'click.dropdown.data-api', Dropdown.prototype.toggle)
-  })
-
-}( window.jQuery || window.ender )
+      
+      
+      
+      $(function() {
+      $(window).on('click.dropdown.data-api', clearMenus)
+      $('body').on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    })
+      
+      
+}(window.jQuery)
