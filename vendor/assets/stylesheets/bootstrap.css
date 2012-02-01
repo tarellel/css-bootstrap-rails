@@ -554,6 +554,7 @@ select,
 label input, label textarea, label select {
   display: block;
 }
+/* work around found at - https://github.com/twitter/bootstrap/issues/1394 */
 input[type="image"], input[type="checkbox"], input[type="radio"] {
   width: auto;
   height: auto;
