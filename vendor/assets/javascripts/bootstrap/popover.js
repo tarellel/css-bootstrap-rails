@@ -1,8 +1,8 @@
 /* ===========================================================
  * bootstrap-popover.js v2.0.0
- * http://twitter.github.com/bootstrap/javascript.html#popover
+ * http://twitter.github.com/bootstrap/javascript.html#popovers
  * ===========================================================
- * Copyright 2011 Twitter, Inc.
+ * Copyright 2012 Twitter, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,58 +18,50 @@
  * =========================================================== */
 
 
-!
-function($) {
+!function( $ ) {
 
-  "use strict"
+ "use strict"
 
-  var Popover = function(element, options) {
+  var Popover = function ( element, options ) {
     this.init('popover', element, options)
   }
 
-/* NOTE: POPOVER EXTENDS BOOTSTRAP-TWIPSY.js
-     ========================================= */
+  /* NOTE: POPOVER EXTENDS BOOTSTRAP-TOOLTIP.js
+     ========================================== */
 
-  Popover.prototype = $.extend({}, $.fn.twipsy.Constructor.prototype, {
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype, {
 
     constructor: Popover
 
-    ,
-    setContent: function() {
-      var $tip = this.tip(),
-          title = this.getTitle(),
-          content = this.getContent()
-          
-          
-           $tip.find('.title')[$.type(title) == 'object' ? 'append' : 'html'](title)
-           $tip.find('.content > *')[$.type(content) == 'object' ? 'append' : 'html'](content)
-          
-          
-           $tip[0].className = 'popover'
+  , setContent: function () {
+      var $tip = this.tip()
+        , title = this.getTitle()
+        , content = this.getContent()
+
+      $tip.find('.popover-title')[ $.type(title) == 'object' ? 'append' : 'html' ](title)
+      $tip.find('.popover-content > *')[ $.type(content) == 'object' ? 'append' : 'html' ](content)
+
+      $tip.removeClass('fade top bottom left right in')
     }
 
-    ,
-    hasContent: function() {
+  , hasContent: function () {
       return this.getTitle() || this.getContent()
     }
 
-    ,
-    getContent: function() {
-      var content, $e = this.$element,
-          o = this.options
-          
-          
-           content = $e.attr('data-content') || (typeof o.content == 'function' ? o.content.call($e[0]) : o.content)
-          
-          
-           content = content.toString().replace(/(^\s*|\s*$)/, "")
-          
-          
-           return content
+  , getContent: function () {
+      var content
+        , $e = this.$element
+        , o = this.options
+
+      content = $e.attr('data-content')
+        || (typeof o.content == 'function' ? o.content.call($e[0]) :  o.content)
+
+      content = content.toString().replace(/(^\s*|\s*$)/, "")
+
+      return content
     }
 
-    ,
-    tip: function() {
+  , tip: function() {
       if (!this.$tip) {
         this.$tip = $(this.options.template)
       }
@@ -79,26 +71,25 @@ function($) {
   })
 
 
-/* POPOVER PLUGIN DEFINITION
+ /* POPOVER PLUGIN DEFINITION
   * ======================= */
 
-  $.fn.popover = function(option) {
-    return this.each(function() {
-      var $this = $(this),
-          data = $this.data('popover'),
-          options = typeof option == 'object' && option
-          
-          if (!data) $this.data('popover', (data = new Popover(this, options)))
-           if (typeof option == 'string') data[option]()
+  $.fn.popover = function ( option ) {
+    return this.each(function () {
+      var $this = $(this)
+        , data = $this.data('popover')
+        , options = typeof option == 'object' && option
+      if (!data) $this.data('popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
     })
   }
 
   $.fn.popover.Constructor = Popover
 
-  $.fn.popover.defaults = $.extend({}, $.fn.twipsy.defaults, {
-    placement: 'right',
-    content: '',
-    template: '<div class="popover"><div class="arrow"></div><div class="inner"><h3 class="title"></h3><div class="content"><p></p></div></div></div>'
+  $.fn.popover.defaults = $.extend({} , $.fn.tooltip.defaults, {
+    placement: 'right'
+  , content: ''
+  , template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
   })
 
-}(window.jQuery)
+}( window.jQuery )
